@@ -31,12 +31,12 @@ An API that enables CRUD operations on user, cart, and product data. Can be used
    - nodemon: ^2.0.22
 
 ### Getting started
-To get started, you must have the lates version of node.js and postqresql installed on your machine.
+To get started, you must have the latest version of node.js and postqresql installed on your machine.
 
 
 ### Installation
 1. First, run the command:
-**npm install** To install al the project's packages.
+**npm install** To install all the dependencies required for the prjoject.
 
 2. Second, run all the CREATE TABLE queries in db.sql in a postgresql database client, and add some data to the products table.
 
