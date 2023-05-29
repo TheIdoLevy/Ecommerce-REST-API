@@ -1,0 +1,384 @@
+openapi: 3.0.0
+info:
+  title: Ecommerce API
+  version: 1.0.0
+  description: A RESTful API for e-commerce
+  contact:
+    email: idolevyisrael@gmail.com
+    name: Ido Levy
+paths:
+  /login:
+    summary: Login a user, using the username and password in the request body
+    post:
+      summary: Logs in a user
+      description: ''
+      operationId: login_user
+      requestBody:
+        description: An object containing the user's password and username
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            text/plain; charset=utf-8:
+              examples:
+                Successful response:
+                  value: '''Successfuly logged in. Enjoy!'''
+                Failure Response:
+                  value: '"Bad credentials!"'
+      tags:
+        - login
+  /logout:
+    summary: Logs out a user
+    get:
+      summary: Logs out a user
+      description: ''
+      operationId: Logout_user
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            text/plain; charset=utf-8:
+              examples:
+                Success Log out:
+                  value: '"Successfuly logged out"'
+      tags:
+        - Logout
+  /register:
+    summary: Registers a user
+    post:
+      summary: Register a user to the API
+      description: ''
+      operationId: Register_user
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            text/plain; charset=utf-8:
+              examples:
+                Success register:
+                  value: '''Successfuly registered! Enjoy!'''
+                Failure response:
+                  value: >-
+                    'A problem occurred. Please try a different username and/or
+                    password'
+      requestBody:
+        description: An object containing the user's credentials
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+      tags:
+        - Register
+  /products:
+    summary: Used to retrieve all products from the database
+    get:
+      summary: Used to get all of the products from the database
+      description: ''
+      operationId: Get_all_products
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            application/json:
+              examples:
+                Success response:
+                  value: |-
+                    [
+                            {
+                                "id": 2,
+                                "name": "Copper wire",
+                                "category": "Electronics",
+                                "price": "$0.50",
+                                "price_per_kilo": null,
+                                "discount": null,
+                                "amount_in_stock": null,
+                                "img": null,
+                                "int_price": 0.5
+                            },
+                            {
+                                "id": 1,
+                                "name": "Arm Cortex-51",
+                                "category": "CPUs",
+                                "price": "$5,000,000.00",
+                                "price_per_kilo": null,
+                                "discount": null,
+                                "amount_in_stock": null,
+                                "img": null,
+                                "int_price": 5000000
+                            }
+                        ]
+      tags:
+        - Products
+  /products/{category}:
+    summary: 'Get all products from a certain category '
+    get:
+      parameters:
+        - in: path
+          name: category
+          schema:
+            type: string
+          required: true
+          description: String name of the category of the product to get
+      summary: Get all products from a certain category
+      description: ''
+      operationId: Get_product_by_category
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            application/json:
+              examples:
+                Successful response for the endpoint /products/CPUs:
+                  value: |2-
+                            {
+                                "id": 1,
+                                "name": "Arm Cortex-51",
+                                "category": "CPUs",
+                                "price": "$5,000,000.00",
+                                "price_per_kilo": null,
+                                "discount": null,
+                                "amount_in_stock": null,
+                                "img": null,
+                                "int_price": 5000000
+                            }
+      tags:
+        - Products
+  /products/exact/{name}:
+    summary: Get a product by its name
+    get:
+      parameters:
+        - in: path
+          name: name
+          schema:
+            type: string
+          required: true
+          description: String ID of the product to get
+      summary: Get a product by its name
+      description: ''
+      operationId: Get_product_by_name
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            application/json:
+              examples:
+                Successful response for the endpoint /products/exact/Arm-Cortex-A715:
+                  value: |-
+                    {
+                        "id": 3,
+                        "name": "Arm-Cortex-A715",
+                        "category": "CPUs",
+                        "price": "$7,000,000.00",
+                        "price_per_kilo": null,
+                        "discount": null,
+                        "amount_in_stock": null,
+                        "img": null,
+                        "int_price": null
+                    }
+      tags:
+        - Products
+  /user/history:
+    summary: Get a user's shopping history
+    get:
+      summary: Get a user's shopping history
+      description: ''
+      operationId: Get_user_history
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            application/json:
+              examples:
+                Successful response:
+                  value: |-
+                    [
+                        {
+                            "customer_id": 14,
+                            "total_price": "$25,000,000.00",
+                            "date": "mm/dd/yyyy",
+                            "time": "hh/mm/ss",
+                            "payment_method": "Cash"
+                        },
+                        {
+                            "customer_id": 14,
+                            "total_price": "$25,000,000.00",
+                            "date": "mm/dd/yyyy",
+                            "time": "hh/mm/ss",
+                            "payment_method": "Credit card"
+                        }
+                    ]
+            text/plain; charset=utf-8:
+              examples:
+                The user doesn't have any shopping history:
+                  value: '''No history! Buy something first!'''
+      tags:
+        - Users
+  /cart:
+    summary: Get all products from the current user's cart
+    get:
+      summary: Get all products from the current user's cart
+      description: ''
+      operationId: Get_from_user_catt
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            application/json:
+              examples:
+                Successful Response:
+                  value: |-
+                    [
+                        {
+                            "id": 28,
+                            "customer_id": 14,
+                            "product_id": null,
+                            "quantity": null
+                        },
+                        {
+                            "id": 28,
+                            "customer_id": 14,
+                            "product_id": 1,
+                            "quantity": "2"
+                        },
+                        {
+                            "id": 28,
+                            "customer_id": 14,
+                            "product_id": 2,
+                            "quantity": "2"
+                        }
+                    ]
+      tags:
+        - Cart
+    put:
+      summary: Add a product to the user's cart
+      description: Add a product to the user's cart
+      operationId: Add_product_to_cart
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            text/plain; charset=utf-8:
+              examples:
+                Successful response:
+                  value: '''Successfully added product to cart!'''
+                Failed response due to invalid product ID in request body:
+                  value: '''Please enter a valid product ID'''
+                Failed response due to un-initialized cart:
+                  value: '''Please initialize a cart first!'''
+      requestBody:
+        description: An object specifying the product to add to the cart and its quantity
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartPut'
+      tags:
+        - Cart
+  /cart/initialize:
+    summary: Initialize a cart for the user
+    post:
+      summary: Initialize a cart for the user
+      description: ''
+      operationId: Initialize_cart
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            text/plain; charset=utf-8:
+              examples:
+                Successful Initialization:
+                  value: '''Successfully initialized your cart! Happy Shopping!'''
+      tags:
+        - Cart
+  /cart/{productId}:
+    summary: >-
+      Delete the product from the user's cart with the ID specified int the url
+      parameter /:productId
+    delete:
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the product to delete
+      summary: >-
+        Delete the product from the user's cart with the ID specified int the
+        url parameter /:productId
+      description: ''
+      operationId: Delete_from_cart
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            text/plain; charset=utf-8:
+              examples:
+                Successful response:
+                  value: '''Successfully removed product from cart'''
+      tags:
+        - Cart
+  /cart/checkout:
+    summary: Checks-out the user's cart, and saves the cart details in the database
+    post:
+      summary: Checks-out the user's cart, and saves the cart details in the database
+      description: ''
+      operationId: Checkout_cart
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            text/plain; charset=utf-8:
+              examples:
+                Successful response:
+                  value: '''Successfully checked out! Thank you!'''
+                No cart was initialized or no products were added to the cart:
+                  value: '''Please Initialize a cart or add products to your cart'''
+                Invalid credit card number:
+                  value: '''Please enter a valid credit card number'''
+      requestBody:
+        description: An object containing the customer's credit card number
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/CartCheckout'
+      tags:
+        - Cart
+components:
+  schemas:
+    Login:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    Register:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+    CartPut:
+      type: object
+      properties:
+        productId:
+          type: integer
+        quantity:
+          type: integer
+    CartCheckout:
+      type: object
+      properties:
+        paymentMethod:
+          type: string
+        creditCardNumber:
+          type: string
