@@ -13,6 +13,23 @@ An API that enables CRUD operations on user, cart, and product data. Can be used
   
 </div>
 
+
+### Dependencies used
+   - bcrypt: ^5.1.0,
+   - body-parser: ^1.20.2,
+   - cookie-parser: ^1.4.6,
+   - cors: ^2.8.5,
+   - dotenv: ^16.0.3,
+   - express: ^4.18.2,
+   - express-session: ^1.17.3,
+   - express-validator: ^7.0.1,
+   - helmet: ^7.0.0,
+   - pg: ^8.11.0,
+   - validator: ^13.9.0 <br>
+ dev-dependencies:
+   - morgan: ^1.10.0,
+   - nodemon: ^2.0.22
+
 ### Getting started
 To get started, you must have the lates version of node.js and postqresql installed on your machine.
 
@@ -24,13 +41,13 @@ To get started, you must have the lates version of node.js and postqresql instal
 2. Second, run all the CREATE TABLE queries in db.sql in a postgresql database client, and add some data to the products table.
 
 3. Then, in example.env, fill in the following environment variables: 
-PORT - The port on which the Express.js server will listen on
-SESSION_SECRET - Your session secret
-DB_PORT - The port on which your database is connected to
-DB_USERNAME - The username you used to connect to your database
-DB_HOST - The host name you used to connect to your database
-DATABASE - Your database's name
-DB_PASSWORD - The password you used to connect to your database
+PORT - The port on which the Express.js server will listen on <br>
+SESSION_SECRET - Your session secret <br>
+DB_PORT - The port on which your database is connected to <br>
+DB_USERNAME - The username you used to connect to your database <br>
+DB_HOST - The host name you used to connect to your database <br>
+DATABASE - Your database's name <br>
+DB_PASSWORD - The password you used to connect to your database <br>
 
 ### Runing the application
 First, make sure that postgresql is started. Then, In the root directory of the project, type 
