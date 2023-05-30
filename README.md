@@ -40,7 +40,7 @@ To get started, you must have the latest version of node.js and postqresql insta
 
 2. Second, run all the CREATE TABLE queries in db.sql in a postgresql database client, and add some data to the products table.
 
-3. Then, in example.env, fill in the following environment variables: 
+3. Then, in example.env, fill in the following environment variables: <br>
 PORT - The port on which the Express.js server will listen on <br>
 SESSION_SECRET - Your session secret <br>
 DB_PORT - The port on which your database is connected to <br>
