@@ -40,14 +40,3 @@ app.use((err, req, res, next) => {
 app.listen(process.env.PORT, ()=>{
     console.log(`Server listening on port ${process.env.PORT}`);
 });
-
-/* 
-{
-    "paymentMethod": "Cash",
-    "creditCardNumber": "059",
-    "productId": "1",
-    "quantity": "2",
-    "password": "Yagoky^-^",
-    "username": "Yaroky#1"
-}
-*/
