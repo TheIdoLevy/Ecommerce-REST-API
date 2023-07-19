@@ -52,8 +52,10 @@ class Queries {
     }
 
     async initCart(){
+        const cartExists = await pool.query(`SELECT * FROM carts WHERE customer_id = ${this.schema.customerId}`);
+        if(cartExists.rows[0]) return {exists: true, msg: "A cart has already been initialized for you. You can start shopping."};
         const newCart = await pool.query(`INSERT INTO carts (customer_id) VALUES (${this.schema.customerId})`);
-        return newCart;
+        return {exists: false, res: 'Successfully initialized your cart! Happy Shopping!'};
     }
 
     async addProductToCart(){
@@ -61,7 +63,7 @@ class Queries {
             const cartId = await pool.query(`SELECT * FROM carts WHERE customer_id = ${this.schema.customerId}`);
             if (!cartId.rows[0] ) return {cartError:true, productError:false};
             const updatedCart = await pool.query(`INSERT INTO carts (id, customer_id, product_id, quantity) VALUES (
-                ${cartId.rows[0].id}, ${this.schema.customerId}, ${this.schema.productId}, '${this.schema.quantity}'
+                ${cartId.rows[0].id}, ${this.schema.customerId}, ${this.schema.productId}, 1
             )`);
             return updatedCart;
         } catch(err) {
@@ -70,23 +72,32 @@ class Queries {
     }
 
     async removeProductFromCart(){
+        try {
         const updatedCart = await pool.query(`DELETE FROM carts WHERE customer_id=${this.schema.customerId} AND product_id=${this.schema.productId} RETURNING *`);
-        return updatedCart;
-
+        if(!updatedCart.rows[0]) return 'No such product in cart';
+        return 'Successfully removed product from cart';
+        } catch(err){
+            return {err: true, msg: err.msg}
+        };
     }
 
     async checkoutCart(){
-        const cart = await pool.query(`SELECT * FROM carts JOIN products ON carts.product_id = products.id WHERE customer_id = ${this.schema.customerId}`);
-        if(!cart.rows[0]) return "Please Initialize a cart or add products to your cart";
-        let totalPrice = 0;
-        for (let item of cart.rows){totalPrice+=item.int_price};
-        if( totalPrice === 0 || typeof(totalPrice)=='undefined' ) return "Please add items to your cart";
-        if(this.schema.paymentMethod==="Credit card"){
-            if(!validateCreditCard(this.schema.creditCardNumber)) return "Please enter a valid credit card number";
-        };
-        await pool.query(`DELETE FROM carts WHERE customer_id=${this.schema.customerId}`);
-        await pool.query(`INSERT INTO checked_out_carts (customer_id, total_price, date, time, payment_method) VALUES (${this.schema.customerId}, ${totalPrice}, 'mm/dd/yyyy', 'hh/mm/ss', '${this.schema.paymentMethod}')`);
-        return 'Successfully checked out! Thank you!';
+        try{
+            const cart = await pool.query(`SELECT * FROM carts JOIN products ON carts.product_id = products.id WHERE customer_id = ${this.schema.customerId}`);
+            if(!cart.rows[0]) return "Please Initialize a cart or add products to your cart";
+            let totalPrice = 0;
+            for (let item of cart.rows){totalPrice+=item.price};
+            if( totalPrice === 0 || totalPrice === NaN ) return "Please add items to your cart";
+            if(this.schema.paymentMethod==="Credit card"){
+                if(!validateCreditCard(this.schema.creditCardNumber)) return "Please enter a valid credit card number";
+            };
+            const d = new Date();
+            await pool.query(`INSERT INTO checked_out_carts (customer_id, total_price, date, time, payment_method) VALUES (${this.schema.customerId}, ${totalPrice}, '${d.getMonth()+1}-${d.getDate()}-${d.getFullYear()}', '${d.getHours()}${d.getMinutes()}', '${this.schema.paymentMethod}')`);
+            await pool.query(`DELETE FROM carts WHERE customer_id=${this.schema.customerId}`);
+            return 'Successfully checked out! Thank you!';
+        } catch(err) {
+            return err.message;
+        }
     }
 
     async getUserHistory(){
