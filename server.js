@@ -25,7 +25,6 @@ app.use(session({
     store,
 }));
 
-app.use(morgan('dev'));
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
 app.use('/register', registerRouter);
