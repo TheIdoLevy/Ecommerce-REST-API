@@ -8,22 +8,24 @@ const {checkIfAuthenticated} = require('./controllers/login');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
-app.enable("trust proxy");
+app.options('*', cors());
+app.enable("trust proxy", 1);
+app.use(cookieParser());
 app.use(helmet());
-app.use(cors());
+app.use(cors({credentials: true, origin: '*'}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
     resave: false,
     saveUninitialized: false,
     secret: process.env.SESSION_SECRET,
-    cookie: {maxAge: 1000*60*60, sameSite: 'none', secure: false},
+    cookie: {maxAge: 1000*60*60, sameSite: 'none'},
     store,
 }));
 
 app.use(morgan('dev'));
-
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
 app.use('/register', registerRouter);
