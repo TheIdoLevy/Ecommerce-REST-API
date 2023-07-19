@@ -1,13 +1,15 @@
 const Queries = require('../model/queries');
-const validator = require('validator');
 
 const querySchema = {name: 'carts', customerId: '', productId: '', quantity: ''};
-const cartQueries = new Queries(querySchema)
+const cartQueries = new Queries(querySchema);
 
 const intiallizeCart = (req, res) => {
     querySchema.customerId = req.session.user.id;
     cartQueries.initCart()
-    .then(data => res.send('Successfully initialized your cart! Happy Shopping!'));
+    .then(data => {
+        if(!data.exists) res.send(data.res);
+        res.send(data.msg);
+    });
 };
 
 const addProductToCart = (req, res) => {
@@ -26,7 +28,7 @@ const removeProductFromCart = (req, res) => {
     querySchema.customerId = req.session.user.id;
     querySchema.productId = Number(req.params.productId);
     cartQueries.removeProductFromCart()
-    .then(data => res.send("Successfully removed product from cart"));
+    .then(data => res.send(data));
 };
 
 const getProductsFromCart = (req, res) => {
